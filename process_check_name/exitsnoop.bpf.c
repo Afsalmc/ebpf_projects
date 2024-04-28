@@ -47,7 +47,9 @@ int handle_exit(struct trace_event_raw_sched_process_template* ctx)
     e->exit_code = (BPF_CORE_READ(task, exit_code) >> 8) & 0xff;
     bpf_get_current_comm(&e->comm, sizeof(e->comm));
 
+    //check if current process name has same actual length to search keyword.
     if((e->comm[NAME_LEN+1]=='\0')){
+                //check if current process name has same name as search keyword.
             int check_process_name = __builtin_memcmp(e->comm, PROC_NAME, NAME_LEN);
             char fmt[] = "memcmp result: %s\n";
             bpf_trace_printk(fmt, sizeof(fmt), e->comm);
