@@ -3,7 +3,6 @@
 #include <bpf/bpf_tracing.h>
 #include <bpf/bpf_core_read.h>
 #include "exitsnoop.h"
-#include <stdlib.h>
 
 char LICENSE[] SEC("license") = "Dual BSD/GPL";
 
@@ -54,9 +53,8 @@ int handle_exit(struct trace_event_raw_sched_process_template* ctx)
             bpf_trace_printk(fmt, sizeof(fmt), e->comm);
             if(check_process_name == 0 ) {
                     /* send data to user-space for post-processing */
-                    system("dotnet-dump collect -p %d",e->pid);
                     bpf_ringbuf_submit(e, 0);
-            return 0;
+                    return 0;
             }
     }
 
